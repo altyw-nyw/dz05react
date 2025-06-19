@@ -1,5 +1,6 @@
-import React from 'react'
+
 import {useState, useMemo,useCallback} from 'react'
+
 
 
 export const FilteredList= ()=>{
@@ -14,15 +15,17 @@ export const FilteredList= ()=>{
 
     const FilteredUsers=useMemo(()=>{
         console.log("фильтр");
-        return users.filter(user=> user.name)
+        return users.filter(user=>
+            user.name.toLowerCase().includes(search.toLowerCase()))
     },[users,search])
 
 
 
     const handleAddUser=useCallback(()=>{
-        const newId=users.length+1;
-        const newUser={id:newId, name: `User${newId}`}
-        setUsers(prev=>[prev,newUser])
+        setUsers(prev=>{
+            const newId=prev.length+1;
+            const newUser={id:newId, name: `User${newId}`}
+            return [...prev,newUser]})
     },[users]);
 
     return(
@@ -36,9 +39,13 @@ export const FilteredList= ()=>{
         />
         <button onClick={handleAddUser}>Добавить</button>
         <ul>
-            {FilteredUsers.map(user=>(
-             <li key={user.id}>(user.name)</li>
-            ))}
+            {FilteredUsers.length > 0 ? (
+                FilteredUsers.map((user) => (
+                    <li key={user.id}>{user.name}</li>
+                ))
+            ) : (
+                <li>Ничего не найдено</li>
+            )}
             </ul>
         </div>
     )
